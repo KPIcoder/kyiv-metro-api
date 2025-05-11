@@ -1,6 +1,7 @@
 import {TicketRepository} from "../domain/tickets.js";
 import {errorSchema} from "../schemas/common.js";
 import {ticketSchema} from "../schemas/ticket-schema.js";
+import {stripeProduct, stripeSession} from "../services/stripe/index.js";
 
 export async function ticketsHttp(fastify) {
     const ticketRepository = new TicketRepository(fastify.pg);
@@ -71,6 +72,7 @@ export async function ticketsHttp(fastify) {
                     validZonesRange: { type: 'string' },
                     usagesLimit: { type: 'number' },
                     validForDays: { type: 'number' },
+                    cost: { type: 'number' },
                 }
             },
             response: {
@@ -79,6 +81,11 @@ export async function ticketsHttp(fastify) {
                 500: errorSchema,
             }
         },
-        handler: (req) => ticketRepository.issueCustomUserTicket(req.body.userId, req.body)
+        handler: async (req, reply) => {
+            const { name, description, cost, userId } = req.body
+            const product = await stripeProduct.createProduct({ name, description, default_price_data: { currency: 'uah', unit_amount: cost * 100 } }, { userId });
+            const session = await stripeSession.createSession({price: product.default_price, mode: 'payment', metadata: {...req.body}});
+            return reply.status(200).send({id: session.id, url: session.url});
+        }
     })
 }

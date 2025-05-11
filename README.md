@@ -31,3 +31,7 @@ create table tickets (
 )
 ```
 I am intentionally leaving Stripe secrets available to you, since testing Stripe integration is the primary task.
+
+Update: 
+Now when you test the POST `/api/tickets/custom`
+it returns a url of the stripe checkout page and once the payment is successful the system issues the ticket.

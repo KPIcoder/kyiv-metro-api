@@ -4,6 +4,8 @@ import cors from '@fastify/cors'
 import {stationsHttp} from "./controllers/stationsHttp.js";
 import {ticketsHttp} from "./controllers/ticketsHttp.js";
 import {transitHttp} from "./controllers/transitHttp.js";
+import fastifyRawBody from "fastify-raw-body";
+import {stripeWebhookPlugin} from "./services/stripe/webhook-plugin.js";
 
 
 const fastify = Fastify({
@@ -28,9 +30,12 @@ await fastify.register(cors, {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 });
 
+await fastify.register(fastifyRawBody)
+
 await fastify.register(stationsHttp)
 await fastify.register(ticketsHttp)
 await fastify.register(transitHttp)
+await fastify.register(stripeWebhookPlugin)
 
 await fastify.listen({port: 3002})
 

@@ -1,5 +1,3 @@
-import q2 from "pg/lib/query.js";
-
 export class TicketRepository {
     constructor(db) {
         this.db = db
