@@ -65,6 +65,19 @@ export class TicketRepository {
 
     }
 
+    async confirmTicketPayment(sessionId) {
+        const q = await this.db.query(
+            `
+          update tickets 
+          set payment_confirmed = true
+          where payment_session_id = $1
+          returning *
+        `,
+            [sessionId]
+        )
+        return q.rows.length > 0 ? this.#ticketMapper(q.rows[0]) : null;
+    }
+
      #ticketMapper = (t) => ({
          id: t.id,
          name: t.name,

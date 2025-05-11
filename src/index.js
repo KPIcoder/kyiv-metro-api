@@ -28,6 +28,18 @@ await fastify.register(cors, {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 });
 
+await fastify.register(async function(fastify) {
+    fastify.addHook('preHandler', async (req, reply) => {
+        if (req.url.includes('/webhook')) {
+            req.rawBody = await new Promise((resolve) => {
+                let data = '';
+                req.raw.on('data', chunk => data += chunk);
+                req.raw.on('end', () => resolve(data));
+            });
+        }
+    });
+});
+
 await fastify.register(stationsHttp)
 await fastify.register(ticketsHttp)
 await fastify.register(transitHttp)
