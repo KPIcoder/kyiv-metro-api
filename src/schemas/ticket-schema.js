@@ -7,5 +7,6 @@ export const ticketSchema = {
         daysLeft: {type: 'number'},
         zones: {type: 'string'},
         usagesLeft: {type: 'number'},
+        price: {type: 'number'},
     }
 }

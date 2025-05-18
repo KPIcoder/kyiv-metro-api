@@ -20,4 +20,27 @@ export function stationsHttp(fastify) {
         },
         handler: stationRepository.getStations.bind(stationRepository),
     })
+
+    fastify.get('/api/zones', {
+        schema: {
+            description: 'Get all zones',
+            tags: ['zones'],
+            response: {
+                200: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            id: { type: 'number' },
+                            name: { type: 'string' },
+                            range: { type: 'number' },
+                            coords: { type: 'array', items: { type: 'object', properties: { lat: { type: 'number' }, lng: { type: 'number' } } } }
+                        }
+                    }
+                },
+                500: errorSchema
+            }
+        },
+        handler: stationRepository.getZones.bind(stationRepository),
+    })
 }

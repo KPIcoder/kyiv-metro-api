@@ -9,7 +9,15 @@ export class TicketRepository {
               select * from app_tickets
             `
         )
-        return query.rows
+        return query.rows.map((t) => ({
+            id: t.id,
+            name: t.name,
+            description: t.description,
+            price: t.price,
+            daysLeft: t.valid_days,
+            zones: t.valid_zones_range,
+            usagesLeft: t.usages_limit,
+        }))
     }
 
     async getUserTickets(userId) {

@@ -13,13 +13,14 @@ export const stripeWebhookPlugin = async (fastify) => {
 
             if (event.type === 'checkout.session.async_payment_succeeded' || 
                 event.type === 'checkout.session.completed') {
-                const ticketsRepository = new TicketRepository();
+                const ticketsRepository = new TicketRepository(fastify.pg);
                 await ticketsRepository.issueCustomUserTicket(session.metadata.userId, {...session.metadata});
 
             } else if (event.type === 'checkout.session.async_payment_failed' ||
                       event.type === 'checkout.session.expired') {
-                // TODO: Handle payment failed
-                console.log('Payment failed');
+                return reply.status(400).send({
+                    error: `Payment failed for session ${session.id}`
+                });
             } else {
                 result = { received: true };
             }

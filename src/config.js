@@ -18,5 +18,5 @@ export const config = {
         stripeWebhook: process.env.STRIPE_WEBHOOK_KEY || 'whsec_eb11772a04236e00d86645ef8a042c94f9eceb88691f5d010905a482ab35b381',
     },
 
-    frontendUrl: 'http://localhost:3000',
+    frontendUrl: 'http://localhost:5173',
 }
